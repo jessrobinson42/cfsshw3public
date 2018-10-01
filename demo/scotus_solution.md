@@ -1,7 +1,7 @@
 Exploring U.S. Supreme Court Decisions
 ================
 Benjamin Soltoff
-October 10, 2017
+October 10, 2018
 
 Get the data
 ------------
@@ -18,7 +18,7 @@ theme_set(theme_minimal())
 scdbv_mod
 ```
 
-    ## # A tibble: 78,857 x 61
+    ## # A tibble: 79,612 x 61
     ##    caseId docketId caseIssuesId voteId dateDecision decisionType usCite
     ##    <chr>  <chr>    <chr>        <chr>  <chr>               <int> <chr> 
     ##  1 1946-… 1946-00… 1946-001-01… 1946-… 11/18/1946              1 329 U…
@@ -31,7 +31,7 @@ scdbv_mod
     ##  8 1946-… 1946-00… 1946-001-01… 1946-… 11/18/1946              1 329 U…
     ##  9 1946-… 1946-00… 1946-001-01… 1946-… 11/18/1946              1 329 U…
     ## 10 1946-… 1946-00… 1946-002-01… 1946-… 11/18/1946              1 329 U…
-    ## # ... with 78,847 more rows, and 54 more variables: sctCite <chr>,
+    ## # ... with 79,602 more rows, and 54 more variables: sctCite <chr>,
     ## #   ledCite <chr>, lexisCite <chr>, term <int>, naturalCourt <int>,
     ## #   chief <chr>, docket <chr>, caseName <chr>, dateArgument <chr>,
     ## #   dateRearg <chr>, petitioner <int>, petitionerState <int>,
@@ -55,7 +55,7 @@ scdbv_mod
 scdbv_leg
 ```
 
-    ## # A tibble: 172,215 x 61
+    ## # A tibble: 172,213 x 61
     ##    caseId docketId caseIssuesId voteId dateDecision decisionType usCite
     ##    <chr>  <chr>    <chr>        <chr>  <chr>               <int> <chr> 
     ##  1 1791-… 1791-00… 1791-001-01… 1791-… 8/3/1791                6 2 U.S…
@@ -68,7 +68,7 @@ scdbv_leg
     ##  8 1791-… 1791-00… 1791-002-01… 1791-… 8/3/1791                2 2 U.S…
     ##  9 1791-… 1791-00… 1791-002-01… 1791-… 8/3/1791                2 2 U.S…
     ## 10 1791-… 1791-00… 1791-002-01… 1791-… 8/3/1791                2 2 U.S…
-    ## # ... with 172,205 more rows, and 54 more variables: sctCite <chr>,
+    ## # ... with 172,203 more rows, and 54 more variables: sctCite <chr>,
     ## #   ledCite <chr>, lexisCite <chr>, term <int>, naturalCourt <int>,
     ## #   chief <chr>, docket <chr>, caseName <chr>, dateArgument <chr>,
     ## #   dateRearg <chr>, petitioner <int>, petitionerState <int>,
@@ -91,7 +91,7 @@ scdbv_leg
 Combine the datasets
 --------------------
 
-    ## # A tibble: 251,072 x 61
+    ## # A tibble: 251,825 x 61
     ##    caseId docketId caseIssuesId voteId dateDecision decisionType usCite
     ##    <chr>  <chr>    <chr>        <chr>  <chr>               <int> <chr> 
     ##  1 1946-… 1946-00… 1946-001-01… 1946-… 11/18/1946              1 329 U…
@@ -104,7 +104,7 @@ Combine the datasets
     ##  8 1946-… 1946-00… 1946-001-01… 1946-… 11/18/1946              1 329 U…
     ##  9 1946-… 1946-00… 1946-001-01… 1946-… 11/18/1946              1 329 U…
     ## 10 1946-… 1946-00… 1946-002-01… 1946-… 11/18/1946              1 329 U…
-    ## # ... with 251,062 more rows, and 54 more variables: sctCite <chr>,
+    ## # ... with 251,815 more rows, and 54 more variables: sctCite <chr>,
     ## #   ledCite <chr>, lexisCite <chr>, term <int>, naturalCourt <int>,
     ## #   chief <chr>, docket <chr>, caseName <chr>, dateArgument <chr>,
     ## #   dateRearg <chr>, petitioner <int>, petitionerState <int>,

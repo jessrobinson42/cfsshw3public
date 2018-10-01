@@ -11,8 +11,8 @@ output: github_document
 library(tidyverse)
 
 # load data
-scdbv_mod <- read_csv("data/SCDB_2017_01_justiceCentered_Citation.csv")
-scdbv_leg <- read_csv("data/SCDB_Legacy_03_justiceCentered_Citation.csv")
+scdbv_mod <- read_csv("data/SCDB_2018_01_justiceCentered_Citation.csv")
+scdbv_leg <- read_csv("data/SCDB_Legacy_04_justiceCentered_Citation.csv")
 scdbv_mod
 scdbv_leg
 ```

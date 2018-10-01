@@ -1,7 +1,7 @@
 Tidying `dadmom`
 ================
 Benjamin Soltoff
-October 10, 2017
+October 10, 2018
 
 Get the data
 ============
@@ -40,21 +40,15 @@ dadmom
 Tidied data
 ===========
 
-    ## # A tibble: 12 x 4
-    ##    famid type   `in` nam  
-    ##    <dbl> <chr> <int> <chr>
-    ##  1     1 cd    30000 <NA> 
-    ##  2     1 cm    15000 <NA> 
-    ##  3     1 ed       NA Bill 
-    ##  4     1 em       NA Bess 
-    ##  5     2 cd    22000 <NA> 
-    ##  6     2 cm    18000 <NA> 
-    ##  7     2 ed       NA Art  
-    ##  8     2 em       NA Amy  
-    ##  9     3 cd    25000 <NA> 
-    ## 10     3 cm    50000 <NA> 
-    ## 11     3 ed       NA Paul 
-    ## 12     3 em       NA Pat
+    ## # A tibble: 6 x 4
+    ##   famid type    inc name 
+    ##   <dbl> <chr> <int> <chr>
+    ## 1     1 d     30000 Bill 
+    ## 2     1 m     15000 Bess 
+    ## 3     2 d     22000 Art  
+    ## 4     2 m     18000 Amy  
+    ## 5     3 d     25000 Paul 
+    ## 6     3 m     50000 Pat
 
 Session info
 ------------
