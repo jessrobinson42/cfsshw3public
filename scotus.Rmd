@@ -41,7 +41,7 @@ scdbv_leg
 
 ```
 
-## Create a graph similar to above that compares the percentage for all cases versus non-unanimous cases (i.e. there was at least one dissenting vote)
+## Create a graph similar to above that adds a second component which compares the percentage for all cases versus non-unanimous cases (i.e. there was at least one dissenting vote)
 
 ```{r}
 
@@ -53,13 +53,13 @@ scdbv_leg
 
 ```
 
-## In each term, how many of the term's published decisions were announced in a given month?
+## The Chief Justice is frequently seen as capable of influencing the ideological direction of the Court. Create a graph similar to the one above that also incorporates information on who was the Chief Justice during the term.
 
 ```{r}
 
 ```
 
-## The Chief Justice is frequently seen as capable of influencing the ideological direction of the Court. Create a graph similar to the one above that also incorporates information on who was the Chief Justice during the term.
+## In each term, how many of the term's published decisions (decided after oral arguments) were announced in a given month?
 
 ```{r}
 
