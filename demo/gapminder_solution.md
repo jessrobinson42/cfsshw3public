@@ -1,7 +1,7 @@
 Joining Gapminder Data
 ================
 Benjamin Soltoff
-October 10, 2018
+April 22, 2019
 
 Get the original data
 =====================
@@ -34,7 +34,7 @@ Import the HIV data
 
     ## # A tibble: 3,301 x 3
     ##    country                   year hivRate
-    ##    <chr>                    <int>   <dbl>
+    ##    <chr>                    <dbl>   <dbl>
     ##  1 Angola                    1979  0.0265
     ##  2 Argentina                 1979  0.0205
     ##  3 Bahamas                   1979  0.01  
@@ -45,7 +45,7 @@ Import the HIV data
     ##  8 Burundi                   1979  0.0159
     ##  9 Canada                    1979  0.0130
     ## 10 Central African Republic  1979  0.113 
-    ## # ... with 3,291 more rows
+    ## # … with 3,291 more rows
 
 What is the relationship between HIV prevalence and life expectancy?
 ====================================================================
