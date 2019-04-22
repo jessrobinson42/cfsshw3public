@@ -43,13 +43,18 @@ For this question, I chose to use an inner join, because I wanted to see only ob
 #anti-joining data
 missinghiv <- anti_join(gapminder, hivdata)
 #plotting missing data
-  ggplot(data = missinghiv, mapping = aes(x=continent, fill=continent)) +
-    geom_bar() +
-    xlab("Continent") +
-    ylab("Number of Countries with Missing HIV Data")
+missinghiv %>%
+ count(continent) %>%
+  filter(!is.na(continent)) %>%
+  ggplot(mapping = aes(x = reorder(continent, -n), y=n, fill=continent)) +
+    geom_col() +
+    labs(title = "Missing HIV data per continent",
+    x= "Continents",
+    y = "Number of Countries with Missing HIV Data",
+    fill = "Continents")
 ```
 
-For this question, I chose to use an anit-join, because I wanted to see observations where there was missing HIV data. 
+For this question, I chose to use an anti-join, because I wanted to see observations that had missing HIV data. 
 
 
 

@@ -9,10 +9,10 @@ output: github_document
 ```{r, echo = TRUE}
 # load useful packages
 library(tidyverse)
-
+library(lubridate)
 # load data
-scdbv_mod <- read_csv("data/SCDB_2018_01_justiceCentered_Citation.csv")
-scdbv_leg <- read_csv("data/SCDB_Legacy_04_justiceCentered_Citation.csv")
+scdbv_mod <- read_csv("data/SCDB_2018_01_justiceCentered_Citation.csv", col_types = cols(docket = col_character()))
+scdbv_leg <- read_csv("data/SCDB_Legacy_04_justiceCentered_Citation.csv", col_types = cols(docket = col_character(), adminAction = col_number(), adminActionState = col_number()))
 scdbv_mod
 scdbv_leg
 ```
@@ -20,7 +20,7 @@ scdbv_leg
 ## Combine the datasets
 
 ```{r}
-# scdbv <- # add your code here
+scotusfull <- bind_rows(scdbv_mod,scdbv_leg) %>% distinct(caseIssuesId, term, justice, justiceName, decisionDirection, majVotes, minVotes, majority, chief, dateDecision, decisionType)
 ```
 
 ## Recode variables as you find necessary
@@ -32,13 +32,47 @@ scdbv_leg
 ## What percentage of cases in each term are decided by a one-vote margin (i.e. 5-4, 4-3, etc.)
 
 ```{r}
-
+#add vote margin and one-vote margin variables
+scotusfull.1 <- scotusfull %>%
+distinct(term, caseIssuesId, majVotes, minVotes) %>% 
+  mutate(voteMargin = ((majVotes - minVotes))) %>% 
+  mutate(oneVoteMargin = voteMargin == 1) %>% 
+  count(term, oneVoteMargin) %>%
+  group_by(term) %>%
+  mutate(totalCases = sum(n)) %>%
+  mutate (percentOneVote = n/totalCases) %>%
+  filter(oneVoteMargin) 
+#plot one-vote margin per term
+ggplot(data = scotusfull.1, mapping = aes(x = term, y=percentOneVote)) +
+  geom_point() +
+  geom_line() + 
+  geom_smooth() +
+  labs(title = "Percentage of Cases Decided by a One Vote Margin per Term", 
+   x = "Term", 
+   y = "Percentage of Cases")
 ```
 
 ## In each term he served on the Court, in what percentage of cases was Justice Antonin Scalia in the majority?
 
 ```{r}
+#create data frame of Scalia decisions
+Scaliaframe <- scotusfull %>% 
+  filter(justiceName == "AScalia") %>%
+  distinct(term, caseIssuesId, majority) %>%
+  count(term, majority) %>%
+  group_by(term) %>%
+  mutate(totalCases = sum(n)) %>%
+  mutate (percentMaj = n/totalCases) %>%
+  filter(majority == 2)
 
+#plot Scalia majority decisions
+ggplot(data = Scaliaframe, mapping = aes(x = term, y=percentMaj)) +
+  geom_point() +
+  geom_line() +
+  ylim(0, 1) +
+ labs(title = "Percentage of Cases Antonin Scalia was in the Majority per Term", 
+   x = "Term", 
+   y = "Percentage of Cases")
 ```
 
 ## Create a graph similar to above that adds a second component which compares the percentage for all cases versus non-unanimous cases (i.e. there was at least one dissenting vote)
@@ -50,7 +84,24 @@ scdbv_leg
 ## In each term, what percentage of cases were decided in the conservative direction?
 
 ```{r}
+#create conservative decisions votes dataframe
+conframe <- scotusfull %>% 
+  distinct(term, caseIssuesId, decisionDirection) %>%
+  mutate(conservative = decisionDirection == 1) %>% 
+  count(term, conservative) %>%
+  group_by(term) %>%
+  mutate(totalCases = sum(n)) %>%
+  mutate (percentConservative = n/totalCases) %>%
+  filter(conservative) 
 
+#plot conservative decisions
+ggplot(data = conframe, mapping = aes(x = term, y=percentConservative)) +
+  geom_point() +
+  geom_line() + 
+  geom_smooth() +
+  labs(title = "Percentage of Cases Decided in the Conservative Direction per Term", 
+   x = "Term", 
+   y = "Percentage of Cases")
 ```
 
 ## The Chief Justice is frequently seen as capable of influencing the ideological direction of the Court. Create a graph similar to the one above that also incorporates information on who was the Chief Justice during the term.
@@ -62,8 +113,39 @@ scdbv_leg
 ## In each term, how many of the term's published decisions (decided after oral arguments) were announced in a given month?
 
 ```{r}
-
+monthframe <- scotusfull %>% 
+  mutate(Dates = as.Date(dateDecision, "%m/%d/%Y")) %>% 
+  filter(decisionType == 1 | 6 | 7) %>% 
+  distinct(term, caseIssuesId, Dates) %>%
+  mutate(month = month(Dates)) %>%
+  mutate(month = factor(month, levels = c("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"), labels = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"))) %>%
+  group_by(term) %>%
+  count(month, term)
+  
+ggplot(data=monthframe, mapping = aes(x = month, y=n, fill = month)) + 
+  geom_boxplot() +
+  coord_flip() + 
+  labs(title = "Number of Published Decisions per Term-Month", 
+   x = "Months", 
+   y = "Number of Decisions",
+   fill = "Months")
 ```
+
+%>%
+  group_by(term) %>%
+  mutate(totalCases = sum(n)) %>%
+  mutate (percentJan = n/totalCases) %>%
+  filter(Month == 1)
+  
+monthframe
+
+ggplot(data = monthframe, mapping = aes(x = Month, y = count(Month))) +
+  geom_boxplot() + 
+  labs(title = "Percentage of Cases Decided in the Conservative Direction per Term", 
+   x = "Term", 
+   y = "Percentage of Cases")
+
+ mutate(months = factor(months, labels = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")))
 
 ## Session info
 

@@ -9,7 +9,7 @@ Get the original data
 library(tidyverse)
 ```
 
-    ## ── Attaching packages ─────────────────────────────────────────────── tidyverse 1.2.1 ──
+    ## ── Attaching packages ───────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──
 
     ## ✔ ggplot2 3.0.0     ✔ purrr   0.2.5
     ## ✔ tibble  1.4.2     ✔ dplyr   0.7.6
@@ -18,7 +18,7 @@ library(tidyverse)
 
     ## Warning: package 'dplyr' was built under R version 3.5.1
 
-    ## ── Conflicts ────────────────────────────────────────────────── tidyverse_conflicts() ──
+    ## ── Conflicts ──────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
     ## ✖ dplyr::filter() masks stats::filter()
     ## ✖ dplyr::lag()    masks stats::lag()
 
@@ -108,15 +108,20 @@ missinghiv <- anti_join(gapminder, hivdata)
 
 ``` r
 #plotting missing data
-  ggplot(data = missinghiv, mapping = aes(x=continent, fill=continent)) +
-    geom_bar() +
-    xlab("Continent") +
-    ylab("Number of Countries with Missing HIV Data")
+missinghiv %>%
+ count(continent) %>%
+  filter(!is.na(continent)) %>%
+  ggplot(mapping = aes(x = reorder(continent, -n), y=n, fill=continent)) +
+    geom_col() +
+    labs(title = "Missing HIV data per continent",
+    x= "Continents",
+    y = "Number of Countries with Missing HIV Data",
+    fill = "Continents")
 ```
 
 ![](gapminder_files/figure-markdown_github/unnamed-chunk-4-1.png)
 
-For this question, I chose to use an anit-join, because I wanted to see observations where there was missing HIV data.
+For this question, I chose to use an anti-join, because I wanted to see observations that had missing HIV data.
 
 Session info
 ------------
@@ -143,7 +148,7 @@ devtools::session_info()
     ##  backports     1.1.2   2017-12-13 [1] CRAN (R 3.5.0)
     ##  base64enc     0.1-3   2015-07-28 [1] CRAN (R 3.5.0)
     ##  bindr         0.1.1   2018-03-13 [1] CRAN (R 3.5.0)
-    ##  bindrcpp      0.2.2   2018-03-29 [1] CRAN (R 3.5.0)
+    ##  bindrcpp    * 0.2.2   2018-03-29 [1] CRAN (R 3.5.0)
     ##  broom         0.5.0   2018-07-17 [1] CRAN (R 3.5.0)
     ##  callr         3.0.0   2018-08-24 [1] CRAN (R 3.5.0)
     ##  cellranger    1.1.0   2016-07-27 [1] CRAN (R 3.5.0)
