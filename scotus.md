@@ -10,7 +10,7 @@ Get the data
 library(tidyverse)
 ```
 
-    ## ── Attaching packages ─────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──
+    ## ── Attaching packages ──────────────────────────────────────────────────── tidyverse 1.2.1 ──
 
     ## ✔ ggplot2 3.0.0     ✔ purrr   0.2.5
     ## ✔ tibble  1.4.2     ✔ dplyr   0.7.6
@@ -19,7 +19,7 @@ library(tidyverse)
 
     ## Warning: package 'dplyr' was built under R version 3.5.1
 
-    ## ── Conflicts ────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+    ## ── Conflicts ─────────────────────────────────────────────────────── tidyverse_conflicts() ──
     ## ✖ dplyr::filter() masks stats::filter()
     ## ✖ dplyr::lag()    masks stats::lag()
 
@@ -35,6 +35,7 @@ library(lubridate)
     ##     date
 
 ``` r
+theme_set(theme_minimal())
 # load data
 scdbv_mod <- read_csv("data/SCDB_2018_01_justiceCentered_Citation.csv", col_types = cols(docket = col_character()))
 scdbv_leg <- read_csv("data/SCDB_Legacy_04_justiceCentered_Citation.csv", col_types = cols(docket = col_character(), adminAction = col_number(), adminActionState = col_number()))
@@ -118,9 +119,6 @@ Combine the datasets
 scotusfull <- bind_rows(scdbv_mod,scdbv_leg) %>% distinct(caseIssuesId, term, justice, justiceName, decisionDirection, majVotes, minVotes, majority, chief, dateDecision, decisionType)
 ```
 
-Recode variables as you find necessary
---------------------------------------
-
 What percentage of cases in each term are decided by a one-vote margin (i.e. 5-4, 4-3, etc.)
 --------------------------------------------------------------------------------------------
 
@@ -147,7 +145,7 @@ ggplot(data = scotusfull.1, mapping = aes(x = term, y=percentOneVote)) +
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](scotus_files/figure-markdown_github/unnamed-chunk-4-1.png)
+![](scotus_files/figure-markdown_github/unnamed-chunk-3-1.png)
 
 In each term he served on the Court, in what percentage of cases was Justice Antonin Scalia in the majority?
 ------------------------------------------------------------------------------------------------------------
@@ -173,10 +171,7 @@ ggplot(data = Scaliaframe, mapping = aes(x = term, y=percentMaj)) +
    y = "Percentage of Cases")
 ```
 
-![](scotus_files/figure-markdown_github/unnamed-chunk-5-1.png)
-
-Create a graph similar to above that adds a second component which compares the percentage for all cases versus non-unanimous cases (i.e. there was at least one dissenting vote)
----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+![](scotus_files/figure-markdown_github/unnamed-chunk-4-1.png)
 
 In each term, what percentage of cases were decided in the conservative direction?
 ----------------------------------------------------------------------------------
@@ -204,13 +199,33 @@ ggplot(data = conframe, mapping = aes(x = term, y=percentConservative)) +
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](scotus_files/figure-markdown_github/unnamed-chunk-7-1.png)
+![](scotus_files/figure-markdown_github/unnamed-chunk-5-1.png)
 
 The Chief Justice is frequently seen as capable of influencing the ideological direction of the Court. Create a graph similar to the one above that also incorporates information on who was the Chief Justice during the term.
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-In each term, how many of the term's published decisions (decided after oral arguments) were announced in a given month?
-------------------------------------------------------------------------------------------------------------------------
+``` r
+#create chief frame
+chiefframe <- scotusfull %>% 
+  distinct(term, caseIssuesId, decisionDirection, chief)  %>% 
+  mutate(chief = parse_factor(chief, levels = c("Jay", "Rutledge","Ellsworth", "Marshall","Taney", "Chase", "Waite","Fuller", "White", "Taft", "Hughes", "Stone", "Vinson", "Warren", "Burger", "Rehnquist", "Roberts"))) %>%
+  mutate(conservative = decisionDirection == 1) %>%
+  count(chief, term, conservative) %>%
+  group_by(term) %>%
+  mutate(totalCases = sum(n)) %>%
+  mutate (percentConservative = n/totalCases) %>%
+  filter(conservative) 
+
+ggplot(data = chiefframe, mapping = aes(x = term, y = percentConservative, color = chief)) +
+  geom_point() +
+  geom_line() +
+  labs(title = "Percentage of Cases Decided in the Conservative Direction per Term and Chief Justice", 
+  x = "Term", 
+  y = "Percentage of Cases",
+  color = "Chief Justice")
+```
+
+![](scotus_files/figure-markdown_github/unnamed-chunk-6-1.png) \#\# In each term, how many of the term's published decisions (decided after oral arguments) were announced in a given month?
 
 ``` r
 monthframe <- scotusfull %>% 
@@ -219,6 +234,7 @@ monthframe <- scotusfull %>%
   distinct(term, caseIssuesId, Dates) %>%
   mutate(month = month(Dates)) %>%
   mutate(month = factor(month, levels = c("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"), labels = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"))) %>%
+  mutate(month = fct_shift(month, n = 9))  %>%
   group_by(term) %>%
   count(month, term)
   
@@ -231,7 +247,7 @@ ggplot(data=monthframe, mapping = aes(x = month, y=n, fill = month)) +
    fill = "Months")
 ```
 
-![](scotus_files/figure-markdown_github/unnamed-chunk-9-1.png)
+![](scotus_files/figure-markdown_github/unnamed-chunk-7-1.png)
 
 Session info
 ------------

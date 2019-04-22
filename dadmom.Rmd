@@ -1,6 +1,6 @@
 ---
 title: "Tidying `dadmom`"
-author: "Your name"
+author: "Jess Robinson"
 output: github_document
 ---
 
@@ -12,7 +12,7 @@ output: github_document
 
 library(tidyverse)
 library(rcfss)
-
+library(knitr)
 data("dadmom")
 dadmom
 ```
@@ -20,7 +20,12 @@ dadmom
 # Tidied data
 
 ```{r}
-# write your code to tidy the data here
+#tidying data
+kable(dadmom %>% 
+  gather(key = key, value= value, "named", "namem", "incd", "incm") %>% 
+  separate(col= key, into=c("variable", "Parent Type"), sep = -1)  %>% 
+  spread(key=variable, value = value) %>% 
+  rename("Income" = inc, "First Name" = name, "Family ID" = famid))
 ```
 
 ## Session info
