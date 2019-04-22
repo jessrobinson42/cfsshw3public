@@ -1,6 +1,6 @@
 ---
 title: "Joining Gapminder Data"
-author: "Your name"
+author: "Jess Robinson"
 output: github_document
 ---
 
@@ -9,24 +9,48 @@ output: github_document
 ```{r, echo = TRUE}
 library(tidyverse)
 library(gapminder)
-
+library(here)
+theme_set(theme_minimal())
 gapminder
 ```
 
 # Import the HIV data
 
 ```{r}
+#loading HIV data
+hivdata <-read_csv(file = here("data", "gapminder_hiv.csv"))
 ```
 
 # What is the relationship between HIV prevalence and life expectancy?
 
 ```{r}
+#join data
+hivprevlife <- inner_join(hivdata, gapminder)
+#plot data
+ggplot(data = hivprevlife, mapping = aes(x=hivRate, y=lifeExp)) +
+    scale_x_log10() +
+    geom_point() +
+    geom_smooth() +
+    xlab("HIV Rate (log)") +
+    ylab("Life Expectancy")
 ```
+
+For this question, I chose to use an inner join, because I wanted to see only observations where there was data on both HIV prevalence and life expectancy.
 
 # Which continents have the most countries with missing HIV data?
 
 ```{r}
+#anti-joining data
+missinghiv <- anti_join(gapminder, hivdata)
+#plotting missing data
+  ggplot(data = missinghiv, mapping = aes(x=continent, fill=continent)) +
+    geom_bar() +
+    xlab("Continent") +
+    ylab("Number of Countries with Missing HIV Data")
 ```
+
+For this question, I chose to use an anit-join, because I wanted to see observations where there was missing HIV data. 
+
 
 
 ## Session info
