@@ -1,6 +1,6 @@
 ---
 title: "Exploring U.S. Supreme Court Decisions"
-author: "Your name"
+author: "Jess Robinson"
 output: github_document
 ---
 
@@ -130,22 +130,6 @@ ggplot(data=monthframe, mapping = aes(x = month, y=n, fill = month)) +
    y = "Number of Decisions",
    fill = "Months")
 ```
-
-%>%
-  group_by(term) %>%
-  mutate(totalCases = sum(n)) %>%
-  mutate (percentJan = n/totalCases) %>%
-  filter(Month == 1)
-  
-monthframe
-
-ggplot(data = monthframe, mapping = aes(x = Month, y = count(Month))) +
-  geom_boxplot() + 
-  labs(title = "Percentage of Cases Decided in the Conservative Direction per Term", 
-   x = "Term", 
-   y = "Percentage of Cases")
-
- mutate(months = factor(months, labels = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")))
 
 ## Session info
 

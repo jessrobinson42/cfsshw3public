@@ -1,6 +1,6 @@
 Exploring U.S. Supreme Court Decisions
 ================
-Your name
+Jess Robinson
 
 Get the data
 ------------
@@ -10,7 +10,7 @@ Get the data
 library(tidyverse)
 ```
 
-    ## ── Attaching packages ───────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──
+    ## ── Attaching packages ─────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──
 
     ## ✔ ggplot2 3.0.0     ✔ purrr   0.2.5
     ## ✔ tibble  1.4.2     ✔ dplyr   0.7.6
@@ -19,7 +19,7 @@ library(tidyverse)
 
     ## Warning: package 'dplyr' was built under R version 3.5.1
 
-    ## ── Conflicts ──────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+    ## ── Conflicts ────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
     ## ✖ dplyr::filter() masks stats::filter()
     ## ✖ dplyr::lag()    masks stats::lag()
 
@@ -232,14 +232,6 @@ ggplot(data=monthframe, mapping = aes(x = month, y=n, fill = month)) +
 ```
 
 ![](scotus_files/figure-markdown_github/unnamed-chunk-9-1.png)
-
-%&gt;% group\_by(term) %&gt;% mutate(totalCases = sum(n)) %&gt;% mutate (percentJan = n/totalCases) %&gt;% filter(Month == 1)
-
-monthframe
-
-ggplot(data = monthframe, mapping = aes(x = Month, y = count(Month))) + geom\_boxplot() + labs(title = "Percentage of Cases Decided in the Conservative Direction per Term", x = "Term", y = "Percentage of Cases")
-
-mutate(months = factor(months, labels = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")))
 
 Session info
 ------------
