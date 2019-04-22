@@ -35,8 +35,9 @@ library(lubridate)
     ##     date
 
 ``` r
+library(knitr)
 theme_set(theme_minimal())
-# load data
+# load data, troubleshooting variable type issues 
 scdbv_mod <- read_csv("data/SCDB_2018_01_justiceCentered_Citation.csv", col_types = cols(docket = col_character()))
 scdbv_leg <- read_csv("data/SCDB_Legacy_04_justiceCentered_Citation.csv", col_types = cols(docket = col_character(), adminAction = col_number(), adminActionState = col_number()))
 scdbv_mod
@@ -116,7 +117,11 @@ Combine the datasets
 --------------------
 
 ``` r
-scotusfull <- bind_rows(scdbv_mod,scdbv_leg) %>% distinct(caseIssuesId, term, justice, justiceName, decisionDirection, majVotes, minVotes, majority, chief, dateDecision, decisionType)
+#bind rows
+scotusfull <- bind_rows(scdbv_mod,scdbv_leg) %>% 
+#select only relevant variables
+  distinct(caseIssuesId, term, justice, justiceName, decisionDirection, 
+           majVotes, minVotes, majority, chief, dateDecision, decisionType)
 ```
 
 What percentage of cases in each term are decided by a one-vote margin (i.e. 5-4, 4-3, etc.)
@@ -147,6 +152,8 @@ ggplot(data = scotusfull.1, mapping = aes(x = term, y=percentOneVote)) +
 
 ![](scotus_files/figure-markdown_github/unnamed-chunk-3-1.png)
 
+On average, the number of one-vote margin decisions has slowly increased since 1900. This potentially suggests that the Court has become more polarized.
+
 In each term he served on the Court, in what percentage of cases was Justice Antonin Scalia in the majority?
 ------------------------------------------------------------------------------------------------------------
 
@@ -159,7 +166,7 @@ Scaliaframe <- scotusfull %>%
   group_by(term) %>%
   mutate(totalCases = sum(n)) %>%
   mutate (percentMaj = n/totalCases) %>%
-  filter(majority == 2)
+  filter(majority == 2) 
 
 #plot Scalia majority decisions
 ggplot(data = Scaliaframe, mapping = aes(x = term, y=percentMaj)) +
@@ -172,6 +179,8 @@ ggplot(data = Scaliaframe, mapping = aes(x = term, y=percentMaj)) +
 ```
 
 ![](scotus_files/figure-markdown_github/unnamed-chunk-4-1.png)
+
+Throughout his terms in the Court, has been relatively consistent in agreeing with the majority decision approximately 80% of the time.
 
 In each term, what percentage of cases were decided in the conservative direction?
 ----------------------------------------------------------------------------------
@@ -201,14 +210,19 @@ ggplot(data = conframe, mapping = aes(x = term, y=percentConservative)) +
 
 ![](scotus_files/figure-markdown_github/unnamed-chunk-5-1.png)
 
+The percentage of cases decided in a conservative direction has steadily increased since 1850.
+
 The Chief Justice is frequently seen as capable of influencing the ideological direction of the Court. Create a graph similar to the one above that also incorporates information on who was the Chief Justice during the term.
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ``` r
-#create chief frame
+#create chief dataframe
 chiefframe <- scotusfull %>% 
   distinct(term, caseIssuesId, decisionDirection, chief)  %>% 
-  mutate(chief = parse_factor(chief, levels = c("Jay", "Rutledge","Ellsworth", "Marshall","Taney", "Chase", "Waite","Fuller", "White", "Taft", "Hughes", "Stone", "Vinson", "Warren", "Burger", "Rehnquist", "Roberts"))) %>%
+  mutate(chief = parse_factor(chief, 
+      levels = c("Jay", "Rutledge","Ellsworth", "Marshall","Taney", "Chase",
+      "Waite","Fuller", "White", "Taft", "Hughes", "Stone", 
+      "Vinson", "Warren", "Burger", "Rehnquist", "Roberts"))) %>%
   mutate(conservative = decisionDirection == 1) %>%
   count(chief, term, conservative) %>%
   group_by(term) %>%
@@ -216,31 +230,39 @@ chiefframe <- scotusfull %>%
   mutate (percentConservative = n/totalCases) %>%
   filter(conservative) 
 
+#plot chief data
 ggplot(data = chiefframe, mapping = aes(x = term, y = percentConservative, color = chief)) +
   geom_point() +
   geom_line() +
-  labs(title = "Percentage of Cases Decided in the Conservative Direction per Term and Chief Justice", 
+  labs(title = "Percentage of Cases Decided Conservatively per Term by Chief Justice", 
   x = "Term", 
   y = "Percentage of Cases",
   color = "Chief Justice")
 ```
 
-![](scotus_files/figure-markdown_github/unnamed-chunk-6-1.png) \#\# In each term, how many of the term's published decisions (decided after oral arguments) were announced in a given month?
+![](scotus_files/figure-markdown_github/unnamed-chunk-6-1.png)
+
+In each term, how many of the term's published decisions (decided after oral arguments) were announced in a given month?
+------------------------------------------------------------------------------------------------------------------------
 
 ``` r
+#create month data frame
 monthframe <- scotusfull %>% 
   mutate(Dates = as.Date(dateDecision, "%m/%d/%Y")) %>% 
   filter(decisionType == 1 | 6 | 7) %>% 
   distinct(term, caseIssuesId, Dates) %>%
   mutate(month = month(Dates)) %>%
-  mutate(month = factor(month, levels = c("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"), labels = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"))) %>%
-  mutate(month = fct_shift(month, n = 9))  %>%
+  mutate(month = factor(month, 
+  levels = c("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"), 
+  labels = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+             "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"))) %>%
+  mutate(month = fct_shift(month, n = 10))  %>%
   group_by(term) %>%
   count(month, term)
   
+#plot month data
 ggplot(data=monthframe, mapping = aes(x = month, y=n, fill = month)) + 
   geom_boxplot() +
-  coord_flip() + 
   labs(title = "Number of Published Decisions per Term-Month", 
    x = "Months", 
    y = "Number of Decisions",
@@ -248,6 +270,8 @@ ggplot(data=monthframe, mapping = aes(x = month, y=n, fill = month)) +
 ```
 
 ![](scotus_files/figure-markdown_github/unnamed-chunk-7-1.png)
+
+The greatest number of decisions published decisions are announced in June, with the least being announced in July, August, September, and October. This is consistent with the fact that the court generally breaks in late June or early July, and recovenes at the end of October.
 
 Session info
 ------------
@@ -296,7 +320,7 @@ devtools::session_info()
     ##  htmltools     0.3.6   2017-04-28 [1] CRAN (R 3.5.0)
     ##  httr          1.3.1   2017-08-20 [1] CRAN (R 3.5.0)
     ##  jsonlite      1.5     2017-06-01 [1] CRAN (R 3.5.0)
-    ##  knitr         1.20    2018-02-20 [1] CRAN (R 3.5.0)
+    ##  knitr       * 1.20    2018-02-20 [1] CRAN (R 3.5.0)
     ##  labeling      0.3     2014-08-23 [1] CRAN (R 3.5.0)
     ##  lattice       0.20-35 2017-03-25 [1] CRAN (R 3.5.0)
     ##  lazyeval      0.2.1   2017-10-29 [1] CRAN (R 3.5.0)

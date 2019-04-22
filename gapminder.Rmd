@@ -35,7 +35,8 @@ ggplot(data = hivprevlife, mapping = aes(x=hivRate, y=lifeExp)) +
     ylab("Life Expectancy")
 ```
 
-For this question, I chose to use an inner join, because I wanted to see only observations where there was data on both HIV prevalence and life expectancy.
+For this question, I chose to use an inner join, because I wanted to see only observations where there was data on both HIV prevalence and life expectancy. 
+For countries with an logarithmic HIV rate above 0.1, the relationship between HIV prevalence and life expectancy is negative, with higher rates of HIV prevalence associated with lower life expectancies. 
 
 # Which continents have the most countries with missing HIV data?
 
@@ -48,13 +49,16 @@ missinghiv %>%
   filter(!is.na(continent)) %>%
   ggplot(mapping = aes(x = reorder(continent, -n), y=n, fill=continent)) +
     geom_col() +
-    labs(title = "Missing HIV data per continent",
+    labs(title = "Missing HIV data by Continent",
     x= "Continents",
-    y = "Number of Countries with Missing HIV Data",
+    y = "Number of Missing Observations",
     fill = "Continents")
 ```
 
 For this question, I chose to use an anti-join, because I wanted to see observations that had missing HIV data. 
+Africa, followed by Asia and then Europe, have the greatest number of missing HIV data observations. 
+
+
 
 
 

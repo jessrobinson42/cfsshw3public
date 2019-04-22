@@ -6,9 +6,6 @@ Get the data
 ============
 
 ``` r
-# don't modify this chunk unless you still need to install rcfss
-# if so, run "devtools::install_github("uc-cfss/rcfss")" in the console first
-
 library(tidyverse)
 ```
 
